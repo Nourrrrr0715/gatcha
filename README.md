@@ -2,19 +2,19 @@ Gatcha
 
 Installation et exécution
 
-1. Cloner le projet
-
+**1. Cloner le projet
+**
 git clone <repo_url>
 cd gatcha
 
-2. Lancer l’application avec Docker
-
+**2. Lancer l’application avec Docker
+**
 docker-compose up --build -d
 
 L’ensemble des microservices sera lancé automatiquement.
 
-3. Accès aux API
-
+**3. Accès aux API
+**
 Une fois le projet lancé, les API seront accessibles aux adresses suivantes :
 
 Authentification : http://localhost:8080/auth
