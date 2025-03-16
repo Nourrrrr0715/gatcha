@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: authentication
+    volumes:
+      - mongo_data:/data/db
+
+  authentication:
+    build:
+      context: ./authentication
+      dockerfile: Dockerfile
+    container_name: authentication-api
+    ports:
+      - '8080:8080'
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://admin:password@mongo:27017
+      SPRING_DATA_MONGODB_DATABASE: authentication
+      APPLICATION_SECRETKEY: GatchaSecretKeyProject
+    depends_on:
+      - mongo
+
+  player:
+    build:
+      context: ./player
+      dockerfile: Dockerfile
+    container_name: player-api
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://admin:password@mongo:27017
+      SPRING_DATA_MONGODB_DATABASE: player
+      APPLICATION_AUTHENTICATIONURL: authentication:8080
+    depends_on:
+      - mongo
+      - authentication
+  
+  monster:
+    build:
+      context: ./monster
+      dockerfile: Dockerfile
+    container_name: monster-api
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://admin:password@mongo:27017
+      SPRING_DATA_MONGODB_DATABASE: monster
+      APPLICATION_AUTHENTICATIONURL: authentication:8080
+    depends_on:
+      - mongo
+      - authentication
+
+  invocation:
+    build:
+      context: ./invocation
+      dockerfile: Dockerfile
+    container_name: invocation-api
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://admin:password@mongo:27017
+      SPRING_DATA_MONGODB_DATABASE: invocation
+      APPLICATION_AUTHENTICATIONURL: authentication:8080
+      APPLICATION_PLAYERURL: player:8081
+      APPLICATION_MONSTERURL: monster:8082
+    depends_on:
+      - mongo
+      - authentication
+      - player
+      - monster
+      
+volumes:
+  mongo_data:
+    driver: local
