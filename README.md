@@ -1,5 +1,7 @@
 # Gatcha
 
+## Membres du groupe : Inès ZAHEM et Nour El Houda EL BOUZ
+
 ## Installation et exécution
 
 ### 1. Cloner le projet
